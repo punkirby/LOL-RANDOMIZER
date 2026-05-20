@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background: #05070d;
+  --font-display: "Arial Narrow", "Bahnschrift", "Segoe UI Condensed", ui-sans-serif, system-ui;
+  --font-body: "Segoe UI", Inter, ui-sans-serif, system-ui;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(10, 200, 185, 0.16), transparent 30%),
+    radial-gradient(circle at 82% 12%, rgba(200, 155, 60, 0.13), transparent 25%),
+    linear-gradient(140deg, #05070d 0%, #09111f 48%, #05070d 100%);
+  color: #f5f7fb;
+  font-family: var(--font-body), system-ui, sans-serif;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: rgba(10, 200, 185, 0.32);
+  color: #ffffff;
+}
+
+.noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.12;
+  z-index: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.42'/%3E%3C/svg%3E");
+}
+
+.hex-grid {
+  background-image:
+    linear-gradient(rgba(10, 200, 185, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10, 200, 185, 0.08) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(circle at center, black, transparent 72%);
+}
+
+.glass {
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  background: linear-gradient(145deg, rgba(10, 18, 31, 0.78), rgba(12, 20, 36, 0.48));
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(22px);
+}
+
+.gold-line {
+  background: linear-gradient(90deg, transparent, rgba(200, 155, 60, 0.88), transparent);
+}
+
+.clip-corners {
+  clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
+}
+
+.text-balance {
+  text-wrap: balance;
+}

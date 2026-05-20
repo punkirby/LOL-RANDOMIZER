@@ -1,0 +1,16 @@
+{
+  "name": "Rift Roulette",
+  "short_name": "RiftRoll",
+  "description": "Randomizador premium para League of Legends.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05070d",
+  "theme_color": "#0ac8b9",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

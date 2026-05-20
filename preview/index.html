@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Rift Roulette Preview</title>
+    <style>
+      :root { color-scheme: dark; --hex:#0ac8b9; --gold:#c89b3c; --void:#05070d; --panel:rgba(10,18,31,.76); }
+      * { box-sizing: border-box; }
+      body { margin:0; min-height:100vh; background:radial-gradient(circle at 20% 15%, rgba(10,200,185,.16), transparent 30%), radial-gradient(circle at 82% 12%, rgba(200,155,60,.13), transparent 25%), linear-gradient(140deg,#05070d,#09111f 48%,#05070d); color:#f5f7fb; font-family:"Segoe UI",system-ui,sans-serif; overflow-x:hidden; }
+      body:before { content:""; position:fixed; inset:0; background-image:linear-gradient(rgba(10,200,185,.08) 1px, transparent 1px),linear-gradient(90deg,rgba(10,200,185,.08) 1px,transparent 1px); background-size:52px 52px; opacity:.45; pointer-events:none; mask-image:radial-gradient(circle at center, black, transparent 72%); }
+      .wrap { position:relative; z-index:1; max-width:1500px; margin:auto; padding:28px; }
+      .top { display:flex; justify-content:space-between; gap:24px; align-items:end; border-bottom:1px solid rgba(255,255,255,.1); padding-bottom:24px; }
+      .eyebrow { display:inline-flex; border:1px solid rgba(200,155,60,.35); color:var(--gold); background:rgba(200,155,60,.1); padding:10px 14px; text-transform:uppercase; letter-spacing:.2em; font-size:12px; font-weight:800; }
+      h1 { margin:14px 0 0; font-family:"Arial Narrow","Bahnschrift",sans-serif; font-size:clamp(58px,9vw,128px); line-height:.82; text-transform:uppercase; }
+      p { color:#9ba7bd; line-height:1.65; }
+      .actions { display:flex; gap:12px; flex-wrap:wrap; }
+      button { color:inherit; font:inherit; cursor:pointer; }
+      .btn { border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.055); padding:13px 18px; clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px); font-weight:800; }
+      .grid { display:grid; grid-template-columns:1fr 360px; gap:24px; margin-top:24px; }
+      .modes { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:18px; }
+      .card,.panel { border:1px solid rgba(255,255,255,.11); background:linear-gradient(145deg,rgba(10,18,31,.82),rgba(12,20,36,.52)); box-shadow:0 24px 80px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.08); backdrop-filter:blur(22px); clip-path:polygon(16px 0,100% 0,100% calc(100% - 16px),calc(100% - 16px) 100%,0 100%,0 16px); }
+      .mode { min-height:96px; text-align:left; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.045); padding:16px; transition:.25s; }
+      .mode.active,.mode:hover { border-color:rgba(10,200,185,.7); background:rgba(10,200,185,.14); box-shadow:0 0 42px rgba(10,200,185,.18); }
+      .stage { display:grid; grid-template-columns:360px 1fr; gap:24px; margin-top:24px; }
+      .rollbox { min-height:560px; display:grid; place-items:center; text-align:center; padding:24px; }
+      .orb { width:250px; aspect-ratio:1; border-radius:50%; display:grid; place-items:center; position:relative; }
+      .orb:before,.orb:after { content:""; position:absolute; inset:0; border-radius:50%; border:1px solid rgba(10,200,185,.34); animation:spin 16s linear infinite; }
+      .orb:after { inset:28px; border-color:rgba(200,155,60,.45); animation-direction:reverse; animation-duration:22s; }
+      .roll { position:relative; z-index:1; width:180px; height:180px; border:1px solid rgba(200,155,60,.75); background:linear-gradient(135deg,#1b2438,#071525,#081014); clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px); font-family:"Arial Narrow"; font-size:56px; font-weight:900; text-transform:uppercase; box-shadow:0 0 40px rgba(200,155,60,.24); }
+      .result { min-height:620px; position:relative; overflow:hidden; }
+      .splash { position:absolute; inset:0; background-image:linear-gradient(to top,#05070d 10%,rgba(5,7,13,.72),transparent), url("https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Lux_0.jpg"); background-size:cover; background-position:center; opacity:.82; transition:.5s; }
+      .content { position:relative; z-index:1; min-height:620px; display:flex; flex-direction:column; justify-content:end; padding:32px; }
+      .title { color:var(--gold); text-transform:uppercase; letter-spacing:.28em; font-weight:800; }
+      .champ { font-family:"Arial Narrow"; font-size:clamp(56px,8vw,94px); line-height:.9; margin:8px 0; text-transform:uppercase; }
+      .tiles { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:28px; }
+      .tile { border:1px solid rgba(255,255,255,.1); background:rgba(0,0,0,.28); padding:16px; }
+      .tile b { color:var(--hex); text-transform:uppercase; letter-spacing:.18em; font-size:11px; }
+      aside { display:grid; gap:16px; }
+      .panel { padding:18px; }
+      .panel h2 { margin:0 0 14px; font-family:"Arial Narrow"; text-transform:uppercase; letter-spacing:.12em; }
+      .metric { border:1px solid rgba(255,255,255,.1); background:rgba(0,0,0,.2); padding:12px; margin-bottom:8px; }
+      .metric span { display:block; color:#68758a; font-size:11px; text-transform:uppercase; letter-spacing:.16em; }
+      .metric strong { font-family:"Arial Narrow"; font-size:28px; }
+      .history { border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.035); padding:12px; margin-top:8px; }
+      @keyframes spin { to { transform:rotate(360deg); } }
+      @media (max-width:1100px) { .grid,.stage { grid-template-columns:1fr; } aside { grid-template-columns:repeat(2,1fr); } }
+      @media (max-width:760px) { .wrap{padding:16px}.top{display:block}.modes{grid-template-columns:repeat(2,1fr)}.tiles{grid-template-columns:1fr}aside{grid-template-columns:1fr} }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <div><span class="eyebrow">Premium League Randomizer</span><h1>Rift Roulette</h1><p>Campeones, roles, builds, runas, hechizos, challenges y composiciones con una experiencia gaming AAA.</p></div>
+        <div class="actions"><button class="btn">Compartir</button><button class="btn">Exportar</button></div>
+      </header>
+      <main class="grid">
+        <section>
+          <div class="card modes" id="modes"></div>
+          <div class="stage">
+            <div class="card rollbox"><div><p class="title">Core Randomizer</p><div class="orb"><button class="roll" id="roll">Roll</button></div></div></div>
+            <section class="card result"><div class="splash" id="splash"></div><div class="content" id="result"></div></section>
+          </div>
+        </section>
+        <aside>
+          <section class="panel"><h2>Control Room</h2><div class="metric"><span>Sonido</span><strong>ON</strong></div><div class="metric"><span>Streamer</span><strong>Ready</strong></div></section>
+          <section class="panel"><h2>Estadísticas</h2><div class="metric"><span>Rolls totales</span><strong id="count">0</strong></div><div class="metric"><span>Campeón frecuente</span><strong id="top">-</strong></div></section>
+          <section class="panel"><h2>Últimos randoms</h2><div id="history"></div></section>
+        </aside>
+      </main>
+    </div>
+    <script>
+      const champions=[["Ahri","La Vastaya de Nueve Colas","Mid","Ahri"],["Akali","La Asesina Sigilosa","Mid / Top","Akali"],["Jinx","La Bala Perdida","Bot","Jinx"],["Yasuo","El Imperdonable","Mid / Top","Yasuo"],["Thresh","El Carcelero Implacable","Support","Thresh"],["Lee Sin","El Monje Ciego","Jungle","LeeSin"],["Lux","La Dama Luminosa","Mid / Support","Lux"],["Samira","La Rosa del Desierto","Bot","Samira"],["Viego","El Rey Arruinado","Jungle","Viego"],["Caitlyn","La Sheriff de Piltover","Bot","Caitlyn"]];
+      const modes=["Campeón","Rol","Build","Full Challenge","Team","Draft","ARAM","Ultimate Bravery"];
+      const builds=["Meta Carry","Glass Cannon","Tank Fraud","Speed Cult","Anti-Carry Protocol","One-Shot Cinema"];
+      const challenges=["No puedes comprar botas","Solo habilidades después del minuto 5","Ultimate disponible = debes forzar jugada","Solo puedes ejecutar con ataques básicos","Compra un ward de control cada vez que mueras"];
+      let history=[];
+      modes.forEach((m,i)=>{const b=document.createElement("button");b.className="mode"+(i===3?" active":"");b.innerHTML=`<b>${m}</b><br><small>${i<4?"Solo / challenge":"Grupo / caos"}</small>`;b.onclick=()=>{document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));b.classList.add("active")};document.getElementById("modes").appendChild(b)});
+      function pick(a){return a[Math.floor(Math.random()*a.length)]}
+      function draw(){const c=pick(champions), build=pick(builds), challenge=pick(challenges);document.getElementById("splash").style.backgroundImage=`linear-gradient(to top,#05070d 10%,rgba(5,7,13,.72),transparent), url("https://ddragon.leagueoflegends.com/cdn/img/champion/splash/${c[3]}_0.jpg")`;document.getElementById("result").innerHTML=`<div class="title">${c[1]}</div><div class="champ">${c[0]}</div><p>Plan generado para entrar a partida con identidad, presión y un poco de teatro competitivo.</p><div class="tiles"><div class="tile"><b>Rol</b><p>${c[2]}</p></div><div class="tile"><b>Build</b><p>${build}</p></div><div class="tile"><b>Runas</b><p>Conquistador + Valor</p></div><div class="tile"><b>Challenge</b><p>${challenge}</p></div></div>`;history.unshift(c[0]);document.getElementById("count").textContent=history.length;document.getElementById("top").textContent=history[0];document.getElementById("history").innerHTML=history.slice(0,6).map(x=>`<div class="history"><b>${x}</b><br><small>${new Date().toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"})}</small></div>`).join("")}
+      document.getElementById("roll").onclick=draw; draw();
+    </script>
+  </body>
+</html>
